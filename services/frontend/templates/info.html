@@ -60,7 +60,7 @@
             {% for card in cards %}
             <div class="card-item">
                 <img src="{{ url_for('static', filename='cards/' + card.image_file) }}" alt="{{ card.name }}" 
-                     onerror="this.src='{{ url_for('static', filename='cards/back.png') }}'">
+                     onerror="this.src='{{ url_for('static' filename='cards/back.png') }}'">
                 <div class="card-name">{{ card.name }}</div>
                 <div class="card-value">Value: {{ card.game_value }}</div>
             </div>
