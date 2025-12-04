@@ -10,6 +10,50 @@ El proyecto original incluía:
 - Frontend Flask que muestra las cartas
 La interfaz no se por que no me va
 
+Cosas comprobadas de los casos de uso :
+create an account - Si
+login into the game - Si
+check/modify my profile - Si
+be safe about my account data - Creo que si
+see the overall card collection - Si
+view the details of a card - Si pero quiero perfeccionarlo hacinedo una pagina por cada carta puede ser una option o un añadido para meterle algo de nuevo texto
+start a new game - Si
+select the subset of cards - Si
+select a card - Si
+know the score - si
+know the turns - si
+see the score -su
+know who won the turn - si
+know who won a match -si
+that the rules are not violated - si
+view the list of my old matches - si
+view the details of one of my matches - si
+view the leaderboards - si entre amigos
+prevent people to tamper my old matches - no lo se a q se refiere
+
+Green: 
+the timer of the move - no, pero implemetar
+who's turn it is  - si
+see which cards I have and which cards I have to play - no
+to be able to see the cards in my hand - si
+I want set a maximum playing time - no 
+I want to join a tournument - no
+play against a bot - yes
+request to a rematch - yes
+I want to send a battle invitation - yes
+to able to surrender - yes
+be able to ask for a rematch - yes
+I want to receive one hint per game - creo que no
+I want to distinguish ranked or friendly matches - no
+I wanto to play locally - creo que si
+I want to use emojis during the match - no, pero se puede hacer
+add friends - yes
+view my firends list - no lo se al 100
+remove a firend from my friends list - no lo se al 100
+view my friend matches - no
+unlock achievements/objective - no pero se podria hacer
+
+
 # FinalASEProject1 - La Escoba Card Game
 
 A **La Escoba** card game platform (classic Spanish card game) with **microservices architecture**. The project includes a web frontend, API Gateway, and multiple specialized services deployed with Docker.
