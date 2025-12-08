@@ -61,6 +61,7 @@ def index():
     return render_template('login.html')
 
 
+# services/frontend/app.py
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
@@ -76,11 +77,21 @@ def login():
         return redirect(url_for('dashboard'))
     else:
         error_msg = "Login fallido. Verifica tus credenciales."
-        try:
-            error_msg = resp.json().get('error', 'Login fallido.')
-        except: pass
+        
+        # MANEJO DE ERRORES MEJORADO
+        if resp is not None:
+            try:
+                # Intentar obtener el error del JSON de respuesta (lo que hace auth-service)
+                error_msg = resp.json().get('error', 'Login fallido.')
+            except Exception:
+                # Si no es JSON o hay otro error al procesar la respuesta
+                error_msg = f"Error del servicio de autenticación (Cód. {resp.status_code})."
+        else:
+            # Error de conexión (resp es None por timeout o error de red)
+            error_msg = "No se pudo conectar al servicio de autenticación (Gateway). Revisa tu Docker Compose."
+            
         flash(f"{error_msg} Si no tienes una cuenta, ¡regístrate ahora!")
-        return redirect(url_for('register')) 
+        return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET'])
 def register_page():

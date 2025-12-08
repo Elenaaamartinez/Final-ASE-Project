@@ -10,6 +10,8 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+import datetime
+
 app = Flask(__name__)
 
 redis_host = os.environ.get('REDIS_HOST', 'redis')
@@ -467,6 +469,31 @@ def surrender_match(match_id):
     state['result'] = final_result
     r.setex(f"match:{match_id}", 7200, json.dumps(state))
     return jsonify({"message": "Match surrendered", "winner": winner}), 200
+
+# services/match-service/app.py
+@app.route('/matches/<match_id>/react', methods=['POST'])
+def post_reaction(match_id):
+    data = request.get_json()
+    player = data.get('player')
+    reaction = data.get('reaction')
+    
+    state_json = r.get(f"match:{match_id}")
+    if not state_json: return jsonify({"error": "Match not found"}), 404
+    state = json.loads(state_json)
+    
+    if state['status'] != 'active': return jsonify({"error": "Match finished/pending"}), 400
+    if player not in state['players']: return jsonify({"error": "Player not in this match"}), 403
+    
+    # Store the reaction in the match state
+    state['last_reaction'] = {
+        "player": player,
+        "content": reaction,
+        "timestamp": datetime.datetime.utcnow().isoformat()
+    }
+    
+    r.setex(f"match:{match_id}", 7200, json.dumps(state))
+    
+    return jsonify({"message": "Reaction posted"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

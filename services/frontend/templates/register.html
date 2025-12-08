@@ -178,6 +178,13 @@
                 <p class="login-form-subtitle">Join us and start playing instantly</p>
             </div>
 
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div style="background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 0.9rem; text-align: center;">
+                        {{ messages[0] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
             <form class="signup-form" action="/register" method="POST">
                 <div class="form-group">
                     <label for="reg-username" class="form-label">Username</label>
@@ -224,8 +231,8 @@
             <div class="divider-section">
                 <span class="divider-text">ALREADY HAVE AN ACCOUNT?</span>
             </div>
+            <button class="login-button" onclick="location.href='/'">Go to Log In</button>
 
-            <button class="login-button" onclick="location.href='/login'">Go to Log In</button>
         </div>
 
         <footer class="login-footer">
