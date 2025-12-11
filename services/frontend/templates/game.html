@@ -162,9 +162,11 @@
         
         <div id="reaction-panel" style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
             <button type="button" class="reaction-btn" onclick="sendReaction('😂')">😂</button>
-            <button type="button" class="reaction-btn" onclick="sendReaction('👍')">👍</button>
+            <button type="button" class="reaction-btn" onclick="sendReaction('🤗​')">🤗​</button>
+            <button type="button" class="reaction-btn" onclick="sendReaction('😋​')">😋​</button>
             <button type="button" class="reaction-btn" onclick="sendReaction('🤔')">🤔</button>
-            <button type="button" class="reaction-btn" onclick="sendReaction('❌')">❌</button>
+            <button type="button" class="reaction-btn" onclick="sendReaction('😳​')">😳​</button>
+            <button type="button" class="reaction-btn" onclick="sendReaction('😡​')">😡​</button>
         </div>
 
         <div class="reaction-display" id="my-reaction"></div>
@@ -459,15 +461,20 @@
             function updateTimerDisplay() {
                 const now = new Date();
                 const elapsedMilliseconds = now - turnStartTime;
+                const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
                 
-                if (elapsedMilliseconds < 0) {
-                    timerValueSpan.innerText = '00:00';
-                    return;
+                // Calculate remaining seconds for the countdown
+                let remainingSeconds = MAX_TURN_TIME_SECONDS - elapsedSeconds;
+
+                if (remainingSeconds <= 0) {
+                    remainingSeconds = 0;
+                    // Stop the timer when it reaches zero
+                    stopTimer(); 
+                    // In a real game, you would submit a default move or surrender here.
                 }
 
-                const totalSeconds = Math.floor(elapsedMilliseconds / 1000);
-                const minutes = Math.floor(totalSeconds / 60);
-                const seconds = totalSeconds % 60;
+                const minutes = Math.floor(remainingSeconds / 60);
+                const seconds = remainingSeconds % 60;
 
                 const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
                 timerValueSpan.innerText = formattedTime;
@@ -485,7 +492,6 @@
                 timerInterval = null;
             }
             document.getElementById('turn-timer').style.display = 'none';
-            document.getElementById('timer-value').innerText = '00:00';
         }
 
         setInterval(updateGameState, 2000);
