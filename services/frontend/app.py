@@ -358,6 +358,18 @@ def proxy_matchmaking_status():
     resp = api_request("GET", f"/matchmaking/status/{session['username']}", token=session['token'])
     return resp.json(), resp.status_code
 
+
+@app.route('/api/proxy/match/<match_id>/react', methods=['POST'])
+def proxy_post_reaction(match_id):
+    if 'token' not in session: return {"error": "Unauthorized"}, 401
+    data = request.get_json()
+    
+    # Forward the request to the Match Service (via API Gateway)
+    # The API Gateway already handles the /matches/<match_id>/react endpoint (implicitly routed by /matches/<path:path>)
+    resp = api_request("POST", f"/matches/{match_id}/react", data=data, token=session['token'])
+    
+    return resp.json(), resp.status_code
+
 @app.route('/matchmaking/cancel', methods=['POST'])
 def matchmaking_cancel():
     if 'token' not in session: return redirect(url_for('index'))
