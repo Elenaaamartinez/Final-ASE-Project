@@ -67,24 +67,23 @@ def get_all_players():
     players = Player.query.all()
     return jsonify([p.to_dict() for p in players]), 200
 
-@app.route('/players/<username>', methods=['POST'])
+@app.route('/<username>', methods=['POST'])
 def create_profile(username):
     if Player.query.get(username):
         return jsonify({"message": "Profile already exists"}), 200
-    
     new_player = Player(username=username)
     db.session.add(new_player)
     db.session.commit()
     return jsonify(new_player.to_dict()), 201
 
-@app.route('/players/<username>', methods=['GET'])
+@app.route('/<username>', methods=['GET'])
 def get_profile(username):
     player = Player.query.get(username)
     if not player:
         return jsonify({"error": "Player not found"}), 404
     return jsonify(player.to_dict()), 200
 
-@app.route('/players/<username>/stats', methods=['PUT'])
+@app.route('/<username>/stats', methods=['PUT'])
 def update_stats(username):
     player = Player.query.get(username)
     if not player:
@@ -99,16 +98,13 @@ def update_stats(username):
     db.session.commit()
     return jsonify(player.to_dict()), 200
 
-@app.route('/players/leaderboard/top', methods=['GET'])
+@app.route('/leaderboard/top', methods=['GET'])
 def get_leaderboard():
-    top_players = Player.query.order_by(
-        Player.matches_won.desc(), 
-        Player.total_score.desc()
-    ).limit(50).all()
+    top_players = Player.query.order_by(Player.total_score.desc()).limit(10).all()
     return jsonify([p.to_dict() for p in top_players]), 200
 
 # --- FRIENDS SECTION ---
-@app.route('/friends/list/<username>', methods=['GET'])
+@app.route('/list/<username>', methods=['GET'])
 def get_friends_list(username):
     me = Player.query.get(username)
     if me:

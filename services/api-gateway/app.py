@@ -49,7 +49,7 @@ def forward_request(service_name, service_prefix, path):
             json=request.get_json() if request.is_json else None,
             headers=headers,
             params=params,
-            verify=False 
+            verify='/app/certs/cert.pem' # <--- CAMBIA ESTO
         )
         return (resp.content, resp.status_code, resp.headers.items())
     except requests.exceptions.ConnectionError:
@@ -69,10 +69,10 @@ def proxy_auth(path):
 def proxy_cards(path):
     return forward_request("cards", "cards", path)
 
+@app.route('/players', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/players/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def proxy_players(path):
-    # Cambia el segundo argumento de "players" a "" si el microservicio 
-    # ya escucha directamente en la raíz para los usuarios.
+    # Usamos "" para que /players/perfil se convierta en player-service/perfil
     return forward_request("player", "", path)
 
 @app.route('/matches', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
@@ -93,7 +93,8 @@ def proxy_invites(path):
 @app.route('/friends', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/friends/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def proxy_friends(path):
-    return forward_request("player", "friends", path)
+    # Antes tenías "players", ahora ponemos ""
+    return forward_request("player", "", path)
 
 # --- New route for matchmaking ---
 @app.route('/matchmaking', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
