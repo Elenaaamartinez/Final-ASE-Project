@@ -12,25 +12,21 @@ class EscobaPlayer(HttpUser):
     wait_time = between(1, 3)
     
     def on_start(self):
-        # 1. Ignorar verificación SSL para certificados auto-firmados
+        # 1. Ignorar verificación SSL
         self.client.verify = False 
         
-        # 2. Datos del usuario (CON MAYÚSCULA EN LA CONTRASEÑA)
+        # 2. Datos del usuario
         self.username = f"player_{str(uuid.uuid4())[:8]}"
-        self.password = "Password123!" # <-- CAMBIADO: Añadida mayúscula
+        self.password = "Password123!" 
         self.email = f"{self.username}@test.com"
         self.token = None
 
         # Registro
-        with self.client.post("/auth/register", json={
+        self.client.post("/auth/register", json={
             "username": self.username,
             "password": self.password,
             "email": self.email
-        }, catch_response=True, name="/auth/register") as response:
-            if response.status_code == 201 or response.status_code == 409:
-                response.success()
-            else:
-                response.failure(f"Registration failed: {response.text}")
+        }, name="/auth/register")
 
         # Login
         response = self.client.post("/auth/login", json={
@@ -40,9 +36,14 @@ class EscobaPlayer(HttpUser):
         
         if response.status_code == 200:
             self.token = response.json().get('token')
-            print(f"Login successful for {self.username}")
+            # --- CORRECCIÓN AQUÍ ---
+            headers = {"Authorization": f"Bearer {self.token}"}
+            # Crear el perfil en el player-service (Esto evita el 404 del GET posterior)
+            self.client.post(f"/players/{self.username}", headers=headers, name="/players/create")
+            print(f"Login and profile creation successful for {self.username}")
         else:
-            print(f"Login failed for {self.username} with status {response.status_code}")
+            print(f"Login failed for {self.username}")
+            
     @task(1)
     def view_cards(self):
         """Weight 1: Occasionally view the cards"""

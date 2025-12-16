@@ -31,9 +31,12 @@ def gateway_health():
 
 # --- HELPER ---
 def build_url(service_url, service_prefix, path):
+    url = service_url.rstrip('/')
+    if service_prefix:
+        url += f"/{service_prefix.strip('/')}"
     if path:
-        return f"{service_url}/{service_prefix}/{path}"
-    return f"{service_url}/{service_prefix}"
+        url += f"/{path.lstrip('/')}"
+    return url
 
 def forward_request(service_name, service_prefix, path):
     """Funzione helper centralizzata per l'inoltro"""
@@ -69,10 +72,9 @@ def proxy_auth(path):
 def proxy_cards(path):
     return forward_request("cards", "cards", path)
 
-@app.route('/players', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/players/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def proxy_players(path):
-    # Usamos "" para que /players/perfil se convierta en player-service/perfil
+    # Esto enviará /player_xxxx directamente a la raíz del player-service
     return forward_request("player", "", path)
 
 @app.route('/matches', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
@@ -90,10 +92,9 @@ def proxy_history(path):
 def proxy_invites(path):
     return forward_request("match", "invites", path)
 
-@app.route('/friends', defaults={'path': ''}, methods=['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/friends/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def proxy_friends(path):
-    # Antes tenías "players", ahora ponemos ""
+    # Esto enviará las peticiones de amigos correctamente
     return forward_request("player", "", path)
 
 # --- New route for matchmaking ---

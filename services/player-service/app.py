@@ -50,11 +50,11 @@ with app.app_context():
 
 # --- ENDPOINTS ---
 
-@app.route('/players/health', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "healthy", "service": "player-service"}), 200
 
-@app.route('/players/<username>/heartbeat', methods=['POST'])
+@app.route('/<username>/heartbeat', methods=['POST'])
 def heartbeat(username):
     player = Player.query.get(username)
     if player:
@@ -62,7 +62,7 @@ def heartbeat(username):
         db.session.commit()
     return jsonify({"status": "ok"}), 200
 
-@app.route('/players/list/all', methods=['GET'])
+@app.route('/list/all', methods=['GET'])
 def get_all_players():
     players = Player.query.all()
     return jsonify([p.to_dict() for p in players]), 200
