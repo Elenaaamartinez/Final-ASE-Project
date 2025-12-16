@@ -510,6 +510,3 @@ def post_reaction(match_id):
    
     r.setex(match_key, 7200, json.dumps(state))
     return jsonify({"message": "Reaction posted"}), 200
-
-if __name__ == '__main__':
-    app.run(debug=debug_mode, host='0.0.0.0', port=5000)

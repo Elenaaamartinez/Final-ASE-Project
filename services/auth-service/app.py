@@ -176,6 +176,3 @@ def update_user(current_user):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=debug_mode, host='0.0.0.0', port=5000)

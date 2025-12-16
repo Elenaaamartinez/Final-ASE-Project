@@ -105,6 +105,3 @@ def get_match_details(match_id):
         return jsonify({"error": "Match not found"}), 404
     
     return jsonify(match.to_full_dict()), 200
-
-if __name__ == '__main__':
-    app.run(debug=debug_mode, host='0.0.0.0', port=5000)
